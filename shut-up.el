@@ -30,13 +30,13 @@
 
 ;;; Code:
 
-;; No "Loading vc-git..." messages.
-(remove-hook 'find-file-hooks 'vc-find-file-hook)
+(when noninteractive
+  ;; Loading vc-git...
+  (remove-hook 'find-file-hooks 'vc-find-file-hook)
 
-;; No "ls does not support --dired; see `dired-use-ls-dired' for
-;; more details." messages.
-(when (boundp 'dired-use-ls-dired)
-  (setq dired-use-ls-dired nil))
+  ;; ls does not support --dired; see `dired-use-ls-dired' for more details.
+  (when (boundp 'dired-use-ls-dired)
+    (setq dired-use-ls-dired nil)))
 
 (provide 'shut-up)
 
