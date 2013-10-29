@@ -4,7 +4,7 @@ If you have an Emacs shell script, you most likely don't want output
 like this:
 
 ```
-Avoid "Loading vc-git..." messages
+Loading vc-git...
 ```
 
 This package does it's best at shutting Emacs up!
