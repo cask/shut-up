@@ -35,7 +35,8 @@
   (remove-hook 'find-file-hooks 'vc-find-file-hook)
 
   ;; ls does not support --dired; see `dired-use-ls-dired' for more details.
-  (setq dired-use-ls-dired nil))
+  (eval-after-load "dired"
+    (setq dired-use-ls-dired nil)))
 
 (provide 'shut-up)
 
