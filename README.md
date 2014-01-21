@@ -24,3 +24,14 @@ Simply require it:
 ```lisp
 (require 'shut-up)
 ```
+
+This changes Emacs settings to reduce the output.  To silence individual
+functions, use the `shut-up` macro:
+
+```lisp
+(let (output)
+  (shut-up
+    (message "Foo")
+    (setq output (shut-up-current-output)))
+  (message "This was the last message: %s" output))
+```
