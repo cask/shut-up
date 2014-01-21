@@ -19,14 +19,7 @@ Add `shut-up` to your [Cask](https://github.com/cask/cask) file:
 
 ## Usage
 
-Simply require it:
-
-```lisp
-(require 'shut-up)
-```
-
-This changes Emacs settings to reduce the output.  To silence individual
-functions, use the `shut-up` macro:
+Use the `shut-up` macro to silence function calls:
 
 ```lisp
 (let (output)
@@ -34,4 +27,12 @@ functions, use the `shut-up` macro:
     (message "Foo")
     (setq output (shut-up-current-output)))
   (message "This was the last message: %s" output))
+```
+
+In non-interactive sessions, you can also use `shut-up-silence-emacs` to change
+some global Emacs settings to reduce output:
+
+```lisp
+(when noninteractive
+  (shut-up-silence-emacs))
 ```

@@ -67,7 +67,14 @@ Inside BODY, the buffer is bound to the lexical variable
          (and (buffer-name shut-up-sink)
               (kill-buffer shut-up-sink))))))
 
-(when noninteractive
+;;;###autoload
+(defun shut-up-silence-emacs ()
+  "Silence Emacs.
+
+Change Emacs settings to reduce the output.
+
+WARNING: This function has GLOBAL SIDE-EFFECTS.  You should only
+call this function in `noninteractive' sessions."
   ;; Loading vc-git...
   (remove-hook 'find-file-hooks 'vc-find-file-hook)
 
