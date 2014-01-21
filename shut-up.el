@@ -1,6 +1,7 @@
 ;;; shut-up.el --- Shut up would you!  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013 Johan Andersson
+;; Copyright (C) 2013, 2014 Johan Andersson
+;; Copyright (C) 2014 Sebastian Wiesner <lunaryorn@gmail.com>
 
 ;; Author: Johan Andersson <johan.rejeep@gmail.com>
 ;; Maintainer: Johan Andersson <johan.rejeep@gmail.com>
