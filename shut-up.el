@@ -39,7 +39,7 @@
 
   ;; ls does not support --dired; see `dired-use-ls-dired' for more details.
   (eval-after-load "dired"
-    (setq dired-use-ls-dired nil)))
+    '(setq dired-use-ls-dired nil)))
 
 (provide 'shut-up)
 
