@@ -1,9 +1,10 @@
-;;; shut-up.el --- Shut up would you!
+;;; shut-up.el --- Shut up would you!  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2013 Johan Andersson
 
 ;; Author: Johan Andersson <johan.rejeep@gmail.com>
 ;; Maintainer: Johan Andersson <johan.rejeep@gmail.com>
+;; Package-Requires: ((cl-lib "0.3"))
 ;; Version: 0.0.1
 ;; URL: http://github.com/rejeep/shut-up.el
 
@@ -30,8 +31,40 @@
 
 ;;; Code:
 
+(require 'cl-lib)
 (eval-when-compile
   (defvar dired-use-ls-dired))
+
+;;;###autoload
+(defmacro shut-up (&rest body)
+  "Evaluate BODY with silenced output.
+
+While BODY is evaluated, all output is redirected to a buffer.
+This affects:
+
+- `message'
+- All functions using `standard-output' (e.g. `print', `princ', etc.)
+
+Inside BODY, the buffer is bound to the lexical variable
+`shut-up-sink'.  Additionally provide a lexical function
+`shut-up-current-output', which returns the current contents of
+`shut-up-sink' when called with no arguments."
+  `(let ((shut-up-sink (generate-new-buffer " *shutup*")))
+     (cl-flet ((shut-up-current-output () (with-current-buffer shut-up-sink
+                                            (buffer-substring-no-properties
+                                             (point-min) (point-max)))))
+       (unwind-protect
+           ;; Override `standard-output', for `print' and friends, and
+           ;; monkey-patch `message'
+           (cl-letf ((standard-output shut-up-sink)
+                     ((symbol-function 'message)
+                      (lambda (fmt &rest args)
+                        (with-current-buffer shut-up-sink
+                          (insert (apply #'format fmt args))
+                          (insert "\n")))))
+             ,@body)
+         (and (buffer-name shut-up-sink)
+              (kill-buffer shut-up-sink))))))
 
 (when noninteractive
   ;; Loading vc-git...
