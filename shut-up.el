@@ -30,6 +30,9 @@
 
 ;;; Code:
 
+(eval-when-compile
+  (defvar dired-use-ls-dired))
+
 (when noninteractive
   ;; Loading vc-git...
   (remove-hook 'find-file-hooks 'vc-find-file-hook)
