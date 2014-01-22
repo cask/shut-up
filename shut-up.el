@@ -83,8 +83,7 @@ Inside BODY, the buffer is bound to the lexical variable
            ;; monkey-patch `message'
            (cl-letf ((standard-output
                       (lambda (char)
-                        (shut-up-with-buffer shut-up-sink
-                          (insert (char-to-string char)))))
+                        (shut-up-with-buffer shut-up-sink (insert-char char))))
                      ((symbol-function 'message)
                       (lambda (fmt &rest args)
                         (shut-up-with-buffer shut-up-sink
