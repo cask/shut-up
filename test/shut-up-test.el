@@ -50,10 +50,6 @@
   (message "This message shall be visible again")
   (shut-up-test-message-shown-p "This message shall be visible again"))
 
-(ert-deftest shut-up/directs-standard-output-to-sink ()
-  (shut-up
-    (should (eq shut-up-sink standard-output))))
-
 (ert-deftest shut-up/silences-princ ()
   (with-temp-buffer
     (let ((standard-output (current-buffer)))
@@ -88,6 +84,19 @@
       (with-temp-buffer
         (insert-file-contents temp-file)
         (should (string= "Silent world" (buffer-string)))))))
+
+(ert-deftest shut-up/kill-sink-buffer ()
+  (shut-up
+   (kill-buffer shut-up-sink)
+   (message "bar")
+   (should (string= (shut-up-current-output) "")))
+  (shut-up
+   (kill-buffer shut-up-sink)
+   (print "bar")
+   (should (string= (shut-up-current-output) "")))
+  (shut-up
+   (kill-buffer shut-up-sink)
+   (should (string= (shut-up-current-output) ""))))
 
 (provide 'shut-up-test)
 
