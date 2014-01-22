@@ -36,6 +36,20 @@
 (eval-when-compile
   (defvar dired-use-ls-dired))
 
+;; Preserve the original definition of `write-region'
+(fset 'shut-up-write-region-original (symbol-function 'write-region))
+
+(defun shut-up-write-region (start end filename
+                                   &optional append visit lockname mustbenew)
+  "Like `write-region', but try to suppress any messages."
+  (unless visit
+    (setq visit 'no-message))
+  ;; Call our "copy" of `write-region', because if this function is used to
+  ;; override `write-region', calling `write-region' directly here would result
+  ;; in any endless recursion.
+  (shut-up-write-region-original start end filename
+                                 append visit lockname mustbenew))
+
 ;;;###autoload
 (defmacro shut-up (&rest body)
   "Evaluate BODY with silenced output.
@@ -63,7 +77,9 @@ Inside BODY, the buffer is bound to the lexical variable
                       (lambda (fmt &rest args)
                         (with-current-buffer shut-up-sink
                           (insert (apply #'format fmt args))
-                          (insert "\n")))))
+                          (insert "\n"))))
+                     ((symbol-function 'write-region)
+                      #'shut-up-write-region))
              ,@body)
          (and (buffer-name shut-up-sink)
               (kill-buffer shut-up-sink))))))

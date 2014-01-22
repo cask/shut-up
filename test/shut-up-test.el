@@ -68,6 +68,27 @@
       (should (string= "This text is visible. This text is visible again."
                        (buffer-string))))))
 
+(ert-deftest shut-up/silences-write-region ()
+  (let ((emacs (concat invocation-directory invocation-name))
+        (shut-up (symbol-file 'shut-up 'defun))
+        (temp-file (make-temp-file "shut-up-test-")))
+    (with-temp-buffer
+      ;; We must use a sub-process, because we have no way to intercept
+      ;; `write-region' messages otherwise
+      (call-process emacs nil t nil "-Q" "--batch"
+                    "-l" shut-up
+                    "--eval" (prin1-to-string
+                              `(progn
+                                 (message "Start")
+                                 (shut-up
+                                   (write-region "Silent world" nil ,temp-file))
+                                 (message "Done"))))
+      (should (string= "Start\nDone\n" (buffer-string)))
+      ;; Test that the overridden shut-up did it's work actually
+      (with-temp-buffer
+        (insert-file-contents temp-file)
+        (should (string= "Silent world" (buffer-string)))))))
+
 (provide 'shut-up-test)
 
 ;;; shut-up-test.el ends here
