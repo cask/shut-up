@@ -89,8 +89,7 @@ Inside BODY, the buffer is bound to the lexical variable
                         (shut-up-with-buffer shut-up-sink
                           (insert (apply #'format fmt args))
                           (insert "\n"))))
-                     ((symbol-function 'write-region)
-                      #'shut-up-write-region))
+                     ((symbol-function 'write-region) #'shut-up-write-region))
              ,@body)
          (and (buffer-name shut-up-sink)
               (kill-buffer shut-up-sink))))))
