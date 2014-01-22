@@ -50,6 +50,26 @@
   (shut-up-write-region-original start end filename
                                  append visit lockname mustbenew))
 
+(defun shut-up-buffer-string (buffer)
+  "Get the contents of BUFFER.
+
+When BUFFER is alive, return its contents without properties.
+Otherwise return nil."
+  (when (buffer-live-p buffer)
+    (with-current-buffer buffer
+      (buffer-substring-no-properties (point-min) (point-max)))))
+
+(defun shut-up-insert-to-buffer (object buffer)
+  "Insert OBJECT into BUFFER.
+
+If BUFFER is not live, do nothing."
+  (when (buffer-live-p buffer)
+    (with-current-buffer buffer
+      (cl-typecase object
+        (character (insert-char object))
+        (string (insert object))
+        (t (princ object #'insert-char))))))
+
 ;;;###autoload
 (defmacro shut-up (&rest body)
   "Evaluate BODY with silenced output.
@@ -66,24 +86,17 @@ Inside BODY, the buffer is bound to the lexical variable
 `shut-up-sink' when called with no arguments."
   (declare (indent 0))
   `(let ((shut-up-sink (generate-new-buffer " *shutup*")))
-     (cl-flet ((shut-up-current-output () (if (buffer-live-p shut-up-sink)
-                                              (with-current-buffer shut-up-sink
-                                                (buffer-substring-no-properties
-                                                 (point-min) (point-max)))
-                                            "")))
+     (cl-flet ((shut-up-current-output () (or (shut-up-buffer-string shut-up-sink) "")))
        (unwind-protect
            ;; Override `standard-output', for `print' and friends, and
            ;; monkey-patch `message'
            (cl-letf ((standard-output
                       (lambda (char)
-                        (when (buffer-live-p shut-up-sink)
-                          (with-current-buffer shut-up-sink (insert-char char)))))
+                        (shut-up-insert-to-buffer char shut-up-sink)))
                      ((symbol-function 'message)
                       (lambda (fmt &rest args)
-                        (when (buffer-live-p shut-up-sink)
-                          (with-current-buffer shut-up-sink
-                            (insert (apply #'format fmt args))
-                            (insert "\n")))))
+                        (let ((text (concat (apply #'format fmt args) "\n")))
+                          (shut-up-insert-to-buffer text shut-up-sink))))
                      ((symbol-function 'write-region) #'shut-up-write-region))
              ,@body)
          (and (buffer-name shut-up-sink)
