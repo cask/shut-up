@@ -50,15 +50,6 @@
   (shut-up-write-region-original start end filename
                                  append visit lockname mustbenew))
 
-(defmacro shut-up-with-buffer (buffer &rest body)
-  "Switch to BUFFER and execute BODY.
-
-If BUFFER does not exists, an empty string is returned."
-  (declare (indent 1))
-  `(if (buffer-live-p ,buffer)
-       (with-current-buffer ,buffer ,@body)
-     ""))
-
 ;;;###autoload
 (defmacro shut-up (&rest body)
   "Evaluate BODY with silenced output.
@@ -75,20 +66,24 @@ Inside BODY, the buffer is bound to the lexical variable
 `shut-up-sink' when called with no arguments."
   (declare (indent 0))
   `(let ((shut-up-sink (generate-new-buffer " *shutup*")))
-     (cl-flet ((shut-up-current-output () (shut-up-with-buffer shut-up-sink
-                                            (buffer-substring-no-properties
-                                             (point-min) (point-max)))))
+     (cl-flet ((shut-up-current-output () (if (buffer-live-p shut-up-sink)
+                                              (with-current-buffer shut-up-sink
+                                                (buffer-substring-no-properties
+                                                 (point-min) (point-max)))
+                                            "")))
        (unwind-protect
            ;; Override `standard-output', for `print' and friends, and
            ;; monkey-patch `message'
            (cl-letf ((standard-output
                       (lambda (char)
-                        (shut-up-with-buffer shut-up-sink (insert-char char))))
+                        (when (buffer-live-p shut-up-sink)
+                          (with-current-buffer shut-up-sink (insert-char char)))))
                      ((symbol-function 'message)
                       (lambda (fmt &rest args)
-                        (shut-up-with-buffer shut-up-sink
-                          (insert (apply #'format fmt args))
-                          (insert "\n"))))
+                        (when (buffer-live-p shut-up-sink)
+                          (with-current-buffer shut-up-sink
+                            (insert (apply #'format fmt args))
+                            (insert "\n")))))
                      ((symbol-function 'write-region) #'shut-up-write-region))
              ,@body)
          (and (buffer-name shut-up-sink)
