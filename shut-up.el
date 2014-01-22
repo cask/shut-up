@@ -50,6 +50,7 @@ Inside BODY, the buffer is bound to the lexical variable
 `shut-up-sink'.  Additionally provide a lexical function
 `shut-up-current-output', which returns the current contents of
 `shut-up-sink' when called with no arguments."
+  (declare (indent 0))
   `(let ((shut-up-sink (generate-new-buffer " *shutup*")))
      (cl-flet ((shut-up-current-output () (with-current-buffer shut-up-sink
                                             (buffer-substring-no-properties
