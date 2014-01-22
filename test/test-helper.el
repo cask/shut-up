@@ -23,6 +23,7 @@
 
 ;;; Code:
 
+(require 's)
 (require 'f)
 
 ;; Load shut-up from the source directory

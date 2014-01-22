@@ -43,8 +43,10 @@
   (shut-up-test-message-shown-p "This message shall be visible")
   (shut-up
     (message "This message shall be hidden")
-    (should (string= "This message shall be hidden\n"
-                     (shut-up-current-output)))
+    ;; Cannot use string equality because Emacs 24.3 prints message
+    ;; "ad-handle-definition: `message' got redefined".
+    (should (s-ends-with? "This message shall be hidden\n"
+                         (shut-up-current-output)))
     (should-not (shut-up-test-message-shown-p "This message shall be hidden")))
   ;; Test that `message' is properly restored
   (message "This message shall be visible again")
@@ -57,8 +59,10 @@
       (should (string= "This text is visible. " (buffer-string)))
       (shut-up
         (princ "This text is hidden. ")
-        (should (string= "This text is hidden. "
-                         (shut-up-current-output)))
+        ;; Cannot use string equality because Emacs 24.3 prints message
+        ;; "ad-handle-definition: `message' got redefined".
+        (should (s-ends-with? "This text is hidden. "
+                             (shut-up-current-output)))
         (should (string= "This text is visible. " (buffer-string))))
       (princ "This text is visible again.")
       (should (string= "This text is visible. This text is visible again."
