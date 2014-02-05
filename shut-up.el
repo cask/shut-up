@@ -36,6 +36,9 @@
 (eval-when-compile
   (defvar dired-use-ls-dired))
 
+(defvar shut-up-ignore nil
+  "When non-nil, do not hide output inside `shut-up'.")
+
 ;; Preserve the original definition of `write-region'
 (fset 'shut-up-write-region-original (symbol-function 'write-region))
 
@@ -74,8 +77,8 @@ If BUFFER is not live, do nothing."
 (defmacro shut-up (&rest body)
   "Evaluate BODY with silenced output.
 
-While BODY is evaluated, all output is redirected to a buffer.
-This affects:
+While BODY is evaluated, all output is redirected to a buffer,
+unless `shut-up-ignore' is non-nil.  This affects:
 
 - `message'
 - All functions using `standard-output' (e.g. `print', `princ', etc.)
@@ -83,24 +86,29 @@ This affects:
 Inside BODY, the buffer is bound to the lexical variable
 `shut-up-sink'.  Additionally provide a lexical function
 `shut-up-current-output', which returns the current contents of
-`shut-up-sink' when called with no arguments."
+`shut-up-sink' when called with no arguments.
+
+Changes to the variable `shut-up-ignore' inside BODY does not
+have any affect."
   (declare (indent 0))
-  `(let ((shut-up-sink (generate-new-buffer " *shutup*")))
-     (cl-flet ((shut-up-current-output () (or (shut-up-buffer-string shut-up-sink) "")))
-       (unwind-protect
-           ;; Override `standard-output', for `print' and friends, and
-           ;; monkey-patch `message'
-           (cl-letf ((standard-output
-                      (lambda (char)
-                        (shut-up-insert-to-buffer char shut-up-sink)))
-                     ((symbol-function 'message)
-                      (lambda (fmt &rest args)
-                        (let ((text (concat (apply #'format fmt args) "\n")))
-                          (shut-up-insert-to-buffer text shut-up-sink))))
-                     ((symbol-function 'write-region) #'shut-up-write-region))
-             ,@body)
-         (and (buffer-name shut-up-sink)
-              (kill-buffer shut-up-sink))))))
+  `(if shut-up-ignore
+       (progn ,@body)
+     (let ((shut-up-sink (generate-new-buffer " *shutup*")))
+       (cl-flet ((shut-up-current-output () (or (shut-up-buffer-string shut-up-sink) "")))
+         (unwind-protect
+             ;; Override `standard-output', for `print' and friends, and
+             ;; monkey-patch `message'
+             (cl-letf ((standard-output
+                        (lambda (char)
+                          (shut-up-insert-to-buffer char shut-up-sink)))
+                       ((symbol-function 'message)
+                        (lambda (fmt &rest args)
+                          (let ((text (concat (apply #'format fmt args) "\n")))
+                            (shut-up-insert-to-buffer text shut-up-sink))))
+                       ((symbol-function 'write-region) #'shut-up-write-region))
+               ,@body)
+           (and (buffer-name shut-up-sink)
+                (kill-buffer shut-up-sink)))))))
 
 ;;;###autoload
 (defun shut-up-silence-emacs ()
