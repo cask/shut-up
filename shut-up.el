@@ -91,24 +91,24 @@ Inside BODY, the buffer is bound to the lexical variable
 Changes to the variable `shut-up-ignore' inside BODY does not
 have any affect."
   (declare (indent 0))
-  `(if shut-up-ignore
-       (progn ,@body)
-     (let ((shut-up-sink (generate-new-buffer " *shutup*")))
-       (cl-flet ((shut-up-current-output () (or (shut-up-buffer-string shut-up-sink) "")))
-         (unwind-protect
-             ;; Override `standard-output', for `print' and friends, and
-             ;; monkey-patch `message'
-             (cl-letf ((standard-output
-                        (lambda (char)
-                          (shut-up-insert-to-buffer char shut-up-sink)))
-                       ((symbol-function 'message)
-                        (lambda (fmt &rest args)
-                          (let ((text (concat (apply #'format fmt args) "\n")))
-                            (shut-up-insert-to-buffer text shut-up-sink))))
-                       ((symbol-function 'write-region) #'shut-up-write-region))
-               ,@body)
-           (and (buffer-name shut-up-sink)
-                (kill-buffer shut-up-sink)))))))
+  `(let ((shut-up-sink (generate-new-buffer " *shutup*")))
+    (cl-flet ((shut-up-current-output () (or (shut-up-buffer-string shut-up-sink) "")))
+      (if shut-up-ignore
+          (progn ,@body)
+        (unwind-protect
+            ;; Override `standard-output', for `print' and friends, and
+            ;; monkey-patch `message'
+            (cl-letf ((standard-output
+                       (lambda (char)
+                         (shut-up-insert-to-buffer char shut-up-sink)))
+                      ((symbol-function 'message)
+                       (lambda (fmt &rest args)
+                         (let ((text (concat (apply #'format fmt args) "\n")))
+                           (shut-up-insert-to-buffer text shut-up-sink))))
+                      ((symbol-function 'write-region) #'shut-up-write-region))
+              ,@body)
+          (and (buffer-name shut-up-sink)
+               (kill-buffer shut-up-sink)))))))
 
 ;;;###autoload
 (defun shut-up-silence-emacs ()

@@ -113,7 +113,8 @@
     (let ((shut-up-ignore t)
           (standard-output (current-buffer)))
       (shut-up
-        (princ "foo")))
+        (princ "foo")
+        (should-not (s-ends-with? "foo" (shut-up-current-output)))))
     (should (string= (buffer-string) "foo"))))
 
 (provide 'shut-up-test)
