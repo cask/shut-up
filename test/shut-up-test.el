@@ -102,6 +102,21 @@
    (kill-buffer shut-up-sink)
    (should (string= (shut-up-current-output) ""))))
 
+(ert-deftest shut-up/ignore ()
+  (with-temp-buffer
+    (let ((standard-output (current-buffer)))
+      (shut-up
+        (princ "foo")
+        (should (s-ends-with? "foo" (shut-up-current-output)))))
+    (should (string= (buffer-string) "")))
+  (with-temp-buffer
+    (let ((shut-up-ignore t)
+          (standard-output (current-buffer)))
+      (shut-up
+        (princ "foo")
+        (should-not (s-ends-with? "foo" (shut-up-current-output)))))
+    (should (string= (buffer-string) "foo"))))
+
 (provide 'shut-up-test)
 
 ;;; shut-up-test.el ends here
