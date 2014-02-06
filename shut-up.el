@@ -37,7 +37,10 @@
   (defvar dired-use-ls-dired))
 
 (defvar shut-up-ignore nil
-  "When non-nil, do not hide output inside `shut-up'.")
+  "When non-nil, do not hide output inside `shut-up'.
+
+Changes to this variable inside a `shut-up' block has no
+effect.")
 
 ;; Preserve the original definition of `write-region'
 (fset 'shut-up-write-region-original (symbol-function 'write-region))
