@@ -72,7 +72,7 @@ If BUFFER is not live, do nothing."
   (when (buffer-live-p buffer)
     (with-current-buffer buffer
       (cl-typecase object
-        (character (insert-char object))
+        (character (insert-char object 1))
         (string (insert object))
         (t (princ object #'insert-char))))))
 
