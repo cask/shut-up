@@ -95,7 +95,7 @@ Changes to the variable `shut-up-ignore' inside BODY does not
 have any affect."
   (declare (indent 0))
   `(let ((shut-up-sink (generate-new-buffer " *shutup*")))
-    (cl-flet ((shut-up-current-output () (or (shut-up-buffer-string shut-up-sink) "")))
+    (cl-labels ((shut-up-current-output () (or (shut-up-buffer-string shut-up-sink) "")))
       (if shut-up-ignore
           (progn ,@body)
         (unwind-protect
