@@ -56,6 +56,13 @@ effect.")
   (shut-up-write-region-original start end filename
                                  append visit lockname mustbenew))
 
+
+(fset 'shut-up-load-original (symbol-function 'load))
+
+(defun shut-up-load (file &optional noerror nomessage nosuffix must-suffix)
+  "Like `load', but try to be quiet about it."
+  (funcall shut-up-load-original file noerror :nomessage nosuffix must-suffix))
+
 (defun shut-up-buffer-string (buffer)
   "Get the contents of BUFFER.
 
@@ -108,7 +115,8 @@ have any affect."
                        (lambda (fmt &rest args)
                          (let ((text (concat (apply #'format fmt args) "\n")))
                            (shut-up-insert-to-buffer text shut-up-sink))))
-                      ((symbol-function 'write-region) #'shut-up-write-region))
+                      ((symbol-function 'write-region) #'shut-up-write-region)
+                      ((symbol-function 'load) #'shut-up-load))
               ,@body)
           (and (buffer-name shut-up-sink)
                (kill-buffer shut-up-sink)))))))
