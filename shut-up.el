@@ -61,7 +61,7 @@ effect.")
 
 (defun shut-up-load (file &optional noerror nomessage nosuffix must-suffix)
   "Like `load', but try to be quiet about it."
-  (funcall shut-up-load-original file noerror :nomessage nosuffix must-suffix))
+  (shut-up-load-original file noerror :nomessage nosuffix must-suffix))
 
 (defun shut-up-buffer-string (buffer)
   "Get the contents of BUFFER.
