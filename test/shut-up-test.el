@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2014  Sebastian Wiesner
 
-;; Author: Sebastian Wiesner <lunaryorn@gmail.com>
+;; Author: Sebastian Wiesner <swiesner@lunaryorn.com>
 ;; Maintainer: Johan Andersson <johan.rejeep@gmail.com>
 ;; URL: http://github.com/rejeep/shut-up.el
 
