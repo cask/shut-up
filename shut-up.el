@@ -59,7 +59,7 @@ effect.")
 
 (fset 'shut-up-load-original (symbol-function 'load))
 
-(defun shut-up-load (file &optional noerror nomessage nosuffix must-suffix)
+(defun shut-up-load (file &optional noerror _nomessage nosuffix must-suffix)
   "Like `load', but try to be quiet about it."
   (shut-up-load-original file noerror :nomessage nosuffix must-suffix))
 
