@@ -1,6 +1,6 @@
 ;;; test-helper.el --- shut-up: Initialize test suite  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014  Sebastian Wiesner
+;; Copyright (C) 2014, 2015  Sebastian Wiesner <swiesner@lunaryorn.com>
 
 ;; This file is NOT part of GNU Emacs.
 

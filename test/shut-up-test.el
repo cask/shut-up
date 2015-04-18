@@ -1,6 +1,6 @@
 ;;; shut-up-test.el --- Test suite for shut-up       -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014  Sebastian Wiesner
+;; Copyright (C) 2014, 2015  Sebastian Wiesner <swiesner@lunaryorn.com>
 
 ;; Author: Sebastian Wiesner <swiesner@lunaryorn.com>
 ;; Maintainer: Johan Andersson <johan.rejeep@gmail.com>
