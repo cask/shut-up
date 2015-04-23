@@ -36,6 +36,11 @@
 (eval-when-compile
   (defvar dired-use-ls-dired))
 
+;; NOTE: This variable has been added in most recent version of
+;; Emacs. It's declared here to support lexical binding and to avoid
+;; compiler warnings.
+(defvar inhibit-message nil)
+
 (defvar shut-up-ignore nil
   "When non-nil, do not hide output inside `shut-up'.
 
