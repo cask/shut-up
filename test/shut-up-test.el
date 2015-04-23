@@ -52,6 +52,11 @@
   (message "This message shall be visible again")
   (shut-up-test-message-shown-p "This message shall be visible again"))
 
+(ert-deftest shut-up/handles-message-with-nil-argument ()
+  (shut-up
+    (message nil)
+    (should (s-blank? (shut-up-current-output)))))
+
 (ert-deftest shut-up/silences-princ ()
   (with-temp-buffer
     (let ((standard-output (current-buffer)))
