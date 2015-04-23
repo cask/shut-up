@@ -25,6 +25,9 @@
 
 ;;; Code:
 
+(require 'shut-up)
+(require 's)
+
 (defun shut-up-test-message-shown-p (message)
   "Determine whether MESSAGE was shown in the messages buffer."
   (let ((pattern (concat "^" (regexp-quote message) "$")))
