@@ -101,7 +101,8 @@ Inside BODY, the buffer is bound to the lexical variable
 Changes to the variable `shut-up-ignore' inside BODY does not
 have any affect."
   (declare (indent 0))
-  `(let ((shut-up-sink (generate-new-buffer " *shutup*")))
+  `(let ((shut-up-sink (generate-new-buffer " *shutup*"))
+         (inhibit-message t))
     (cl-labels ((shut-up-current-output () (or (shut-up-buffer-string shut-up-sink) "")))
       (if shut-up-ignore
           (progn ,@body)
