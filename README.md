@@ -17,6 +17,11 @@ Add `shut-up` to your [Cask](https://github.com/cask/cask) file:
 (depends-on "shut-up")
 ```
 
+### Debian and Ubuntu
+
+Users of Debian 9 or later or Ubuntu 16.10 or later may simply
+`apt-get install elpa-shut-up`.
+
 ## Usage
 
 Use the `shut-up` macro to silence function calls:
