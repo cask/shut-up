@@ -48,7 +48,8 @@ Changes to this variable inside a `shut-up' block has no
 effect.")
 
 ;; Preserve the original definition of `write-region'
-(fset 'shut-up-write-region-original (symbol-function 'write-region))
+(unless (fboundp 'shut-up-write-region-original)
+  (fset 'shut-up-write-region-original (symbol-function 'write-region)))
 
 (defun shut-up-write-region (start end filename
                                    &optional append visit lockname mustbenew)
@@ -61,8 +62,8 @@ effect.")
   (shut-up-write-region-original start end filename
                                  append visit lockname mustbenew))
 
-
-(fset 'shut-up-load-original (symbol-function 'load))
+(unless (fboundp 'shut-up-load-original)
+  (fset 'shut-up-load-original (symbol-function 'load)))
 
 (defun shut-up-load (file &optional noerror _nomessage nosuffix must-suffix)
   "Like `load', but try to be quiet about it."
