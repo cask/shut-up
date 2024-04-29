@@ -129,6 +129,12 @@
         (should-not (s-ends-with? "foo" (shut-up-current-output)))))
     (should (string= (buffer-string) "foo"))))
 
+(ert-deftest shut-up/message-return-value ()
+  (should (equal (shut-up (message "hi"))
+                 "hi"))
+  (should (equal (shut-up (message "hi %s" "something"))
+                 "hi something")))
+
 (provide 'shut-up-test)
 
 ;;; shut-up-test.el ends here
