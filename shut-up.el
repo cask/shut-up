@@ -121,8 +121,9 @@ have any affect."
                        ((symbol-function 'message)
                         (lambda (fmt &rest args)
                           (when fmt
-                            (let ((text (concat (apply #'format fmt args) "\n")))
-                              (shut-up-insert-to-buffer text shut-up-sink)))))
+                            (let ((text (apply #'format fmt args)))
+                              (shut-up-insert-to-buffer (concat text "\n") shut-up-sink)
+                              text))))
                        ((symbol-function 'write-region) #'shut-up-write-region)
                        ((symbol-function 'load) #'shut-up-load))
                ,@body)
