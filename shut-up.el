@@ -5,7 +5,7 @@
 
 ;; Author: Johan Andersson <johan.rejeep@gmail.com>
 ;; Maintainer: Johan Andersson <johan.rejeep@gmail.com>
-;; Package-Requires: ((cl-lib "0.3") (emacs "24"))
+;; Package-Requires: ((emacs "25.3"))
 ;; Version: 0.3.2
 ;; URL: http://github.com/rejeep/shut-up.el
 
@@ -35,11 +35,6 @@
 (require 'cl-lib)
 (eval-when-compile
   (defvar dired-use-ls-dired))
-
-;; NOTE: This variable has been added in most recent version of
-;; Emacs. It's declared here to support lexical binding and to avoid
-;; compiler warnings.
-(defvar inhibit-message nil)
 
 (defvar shut-up-ignore nil
   "When non-nil, do not hide output inside `shut-up'.
