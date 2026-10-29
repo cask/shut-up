@@ -45,6 +45,7 @@ effect.")
 ;; Preserve the original definition of `write-region'
 (unless (fboundp 'shut-up-write-region-original)
   (fset 'shut-up-write-region-original (symbol-function 'write-region)))
+(declare-function shut-up-write-region-original nil)
 
 (defun shut-up-write-region (start end filename
                                    &optional append visit lockname mustbenew)
@@ -59,6 +60,7 @@ effect.")
 
 (unless (fboundp 'shut-up-load-original)
   (fset 'shut-up-load-original (symbol-function 'load)))
+(declare-function shut-up-load-original nil)
 
 (defun shut-up-load (file &optional noerror _nomessage nosuffix must-suffix)
   "Like `load', but try to be quiet about it."
@@ -134,7 +136,7 @@ Change Emacs settings to reduce the output.
 WARNING: This function has GLOBAL SIDE-EFFECTS.  You should only
 call this function in `noninteractive' sessions."
   ;; Loading vc-git...
-  (remove-hook 'find-file-hooks 'vc-find-file-hook)
+  (remove-hook 'find-file-hook 'vc-find-file-hook)
 
   ;; ls does not support --dired; see `dired-use-ls-dired' for more details.
   (eval-after-load "dired"
